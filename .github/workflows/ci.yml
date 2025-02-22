@@ -33,20 +33,20 @@ jobs:
           restore-keys: |
             maven-${{ runner.os }}-
 
-      - name: Build and Run Tests
-        run: mvn clean test
-
       - name: Run SAST Security Scan
         run: |
           mvn verify
           mkdir -p reports
           mv target/*.html reports/
+          ls -lah reports  # ✅ Debugging step to check if report exists
 
-      - name: Upload SAST Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: SAST-Report
-          path: reports/
+      - name: Verify Report Exists
+        run: test -f reports/scan_results.html || { echo "❌ scan_results.html missing!"; exit 1; }
+
+
+      - name: Build and Run Tests
+        run: mvn clean test
+
 
       - name: Install Chrome
         run: |
