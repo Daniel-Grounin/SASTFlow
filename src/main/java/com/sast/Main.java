@@ -10,13 +10,13 @@ public class Main {
         // Read file
         String fileContent = FileScanner.scanFile(filePath);
 
-        // Scan for vulnerabilities (Now returns List<String>)
-        List<String> vulnerabilities = VulnerabilityChecker.checkVulnerabilities(fileContent);
+        // Scan for vulnerabilities
+        List<String> scanReport = VulnerabilityChecker.checkVulnerabilities(fileContent); // ✅ Already returns List<String>
 
         // Display results
-        vulnerabilities.forEach(System.out::println); // Print each vulnerability on a new line
+        scanReport.forEach(System.out::println);
 
         // Save report
-        ReportGenerator.generateReport(vulnerabilities);
+        ReportGenerator.generateReport(scanReport, "reports/scan_results.html");
     }
 }

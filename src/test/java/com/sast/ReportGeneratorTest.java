@@ -2,23 +2,35 @@ package com.sast;
 
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.Arrays;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ReportGeneratorTest {
+class ReportGeneratorTest {
+
     @Test
-    public void testGenerateReport() throws IOException {
-        List<String> testReportContent = Arrays.asList("Test Report Content");
+    void testGenerateReport() throws IOException {
+        String filePath = "reports/test_report.html";
+        List<String> vulnerabilities = List.of("Hardcoded Password", "Insecure File Handling");
 
-        ReportGenerator.generateReport(testReportContent); // Pass as List<String>
+        // Generate report
+        ReportGenerator.generateReport(vulnerabilities, filePath);
 
-        Path reportPath = Paths.get("reports/scan_results.html");
+        // ✅ Wait for file creation
+        Path reportPath = Path.of(filePath);
         assertTrue(Files.exists(reportPath), "Report file should be created");
 
-        String content = Files.readString(reportPath);
-        assertTrue(content.contains("Test Report Content"), "Report should contain the test data");
+        // ✅ Read report content
+        String reportContent = Files.readString(reportPath);
+
+        // ✅ Check if expected vulnerabilities exist
+        assertAll("Vulnerabilities check",
+                () -> assertTrue(reportContent.contains("Hardcoded Password"), "❌ Missing: Hardcoded Password"),
+                () -> assertTrue(reportContent.contains("Insecure File Handling"), "❌ Missing: Insecure File Handling")
+        );
+
+        // ✅ Check if the expected title is present
+        assertTrue(reportContent.contains("<h2>Security Scan Results</h2>"), "❌ Missing expected title in report");
     }
 }

@@ -11,7 +11,6 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.io.File;
 import java.time.Duration;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SeleniumReportTest {
@@ -20,14 +19,14 @@ public class SeleniumReportTest {
 
     @BeforeEach
     public void setup() {
-        WebDriverManager.chromedriver().clearResolutionCache().setup(); // Ensures latest ChromeDriver version
+        WebDriverManager.chromedriver().clearResolutionCache().setup();
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(5)); // Explicit wait up to 5 sec
+        wait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     @Test
     public void testScanResultsDisplayed() {
-        // Load the scan results HTML file
+        // Load the test scan results file
         File reportFile = new File("reports/scan_results.html");
         String reportPath = reportFile.getAbsoluteFile().toURI().toString();
         System.out.println("Loading report from: " + reportPath);
@@ -39,7 +38,7 @@ public class SeleniumReportTest {
 
         // 🔄 Debugging: Print the full page content
         String pageText = driver.findElement(By.tagName("body")).getText();
-        System.out.println(pageText);
+        System.out.println("Page Content:\n" + pageText);
 
         // ✅ Assert vulnerabilities appear
         assertAll("Vulnerabilities check",

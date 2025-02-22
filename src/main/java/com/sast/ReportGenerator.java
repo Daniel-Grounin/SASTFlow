@@ -5,32 +5,33 @@ import java.nio.file.*;
 import java.util.List;
 
 public class ReportGenerator {
-    public static void generateReport(List<String> vulnerabilities) throws IOException {
-        Path reportPath = Paths.get("reports/scan_results.html");
 
-        // Ensure the "reports" directory exists
-        Files.createDirectories(reportPath.getParent());
+    public static void generateReport(List<String> vulnerabilities, String filePath) throws IOException {
+        Path reportPath = Paths.get(filePath);
+        Path parentDir = reportPath.getParent();
+
+        if (parentDir != null && !Files.exists(parentDir)) {
+            Files.createDirectories(parentDir);
+        }
 
         // Start HTML structure
         StringBuilder html = new StringBuilder();
         html.append("<html><head><title>SAST Report</title>")
                 .append("<style>")
-                .append("body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; }")
-                .append(".container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }")
-                .append("h2 { color: #2c3e50; text-align: center; }")
+                .append("body { font-family: Arial, sans-serif; margin: 20px; }")
+                .append("h2 { color: #2c3e50; }")
                 .append("table { width: 100%; border-collapse: collapse; margin-top: 20px; }")
-                .append("th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }")
+                .append("th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }")
                 .append("th { background-color: #34495e; color: white; }")
                 .append(".high { background-color: #e74c3c; color: white; }")
                 .append(".medium { background-color: #f39c12; color: white; }")
                 .append(".low { background-color: #2ecc71; color: white; }")
                 .append("</style></head><body>")
-                .append("<div class='container'>")
                 .append("<h2>Security Scan Results</h2>")
                 .append("<table>")
                 .append("<tr><th>Issue</th><th>Severity</th></tr>");
 
-        // Add vulnerabilities dynamically
+        // Add vulnerabilities
         for (String vulnerability : vulnerabilities) {
             String severityClass = getSeverityClass(vulnerability);
             html.append("<tr><td>").append(vulnerability).append("</td>")
@@ -39,7 +40,7 @@ public class ReportGenerator {
         }
 
         // Close HTML
-        html.append("</table></div></body></html>");
+        html.append("</table></body></html>");
 
         // Write to file
         Files.write(reportPath, html.toString().getBytes());
