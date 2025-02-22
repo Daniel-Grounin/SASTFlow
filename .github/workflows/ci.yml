@@ -43,7 +43,7 @@ jobs:
           mv target/*.html reports/
 
       - name: Upload SAST Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SAST-Report
           path: reports/
