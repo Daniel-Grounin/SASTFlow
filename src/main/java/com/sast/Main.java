@@ -1,7 +1,6 @@
 package com.sast;
 
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -11,14 +10,11 @@ public class Main {
         // Read file
         String fileContent = FileScanner.scanFile(filePath);
 
-        // Scan for vulnerabilities
-        String scanReport = VulnerabilityChecker.checkVulnerabilities(fileContent);
+        // Scan for vulnerabilities (Now returns List<String>)
+        List<String> vulnerabilities = VulnerabilityChecker.checkVulnerabilities(fileContent);
 
         // Display results
-        System.out.println(scanReport);
-
-        // Convert report to a List<String> (each line as a separate entry)
-        List<String> vulnerabilities = Arrays.asList(scanReport.split("\n"));
+        vulnerabilities.forEach(System.out::println); // Print each vulnerability on a new line
 
         // Save report
         ReportGenerator.generateReport(vulnerabilities);

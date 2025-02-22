@@ -3,13 +3,17 @@ package com.sast;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportGeneratorTest {
     @Test
     public void testGenerateReport() throws IOException {
-        String testReportContent = "Test Report Content";
-        ReportGenerator.generateReport(testReportContent);
+        List<String> testReportContent = Arrays.asList("Test Report Content");
+
+        ReportGenerator.generateReport(testReportContent); // Pass as List<String>
 
         Path reportPath = Paths.get("reports/scan_results.html");
         assertTrue(Files.exists(reportPath), "Report file should be created");
