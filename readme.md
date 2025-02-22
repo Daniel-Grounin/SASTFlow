@@ -57,5 +57,7 @@ This project uses GitHub Actions for automated security scans and testing.
 ## Modify **.github/workflows/ci.yml**
 To update the workflow, edit the ci.yml file in the .github/workflows/ directory.
 
-## 🐞 Troubleshooting
+## ScreenShot of the analysis
+![Screenshot_4](https://github.com/user-attachments/assets/14522f42-9fd0-4bcb-8d5c-480dbcb71e02)
+
 
