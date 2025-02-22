@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -19,9 +20,21 @@ public class SeleniumReportTest {
 
     @BeforeEach
     public void setup() {
-        WebDriverManager.chromedriver().clearResolutionCache().setup();
-        driver = new ChromeDriver();
+        WebDriverManager.chromedriver().setup();
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless"); // Run without GUI
+        options.addArguments("--disable-gpu");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--user-data-dir=/tmp/chrome-profile");
+        options.addArguments("--remote-allow-origins=*");
+
+        driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
+        // Debugging output
+        System.out.println("Chrome version: " + ((HasCapabilities) driver).getCapabilities().getBrowserVersion());
     }
 
     @Test
@@ -33,14 +46,14 @@ public class SeleniumReportTest {
 
         driver.get(reportPath);
 
-        // ✅ Explicitly wait until the body tag is loaded
+        // Wait until the body tag is loaded
         wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));
 
-        // 🔄 Debugging: Print the full page content
+        // Get the page content
         String pageText = driver.findElement(By.tagName("body")).getText();
         System.out.println("Page Content:\n" + pageText);
 
-        // ✅ Assert vulnerabilities appear
+        // Validate vulnerabilities appear
         assertAll("Vulnerabilities check",
                 () -> assertTrue(pageText.contains("Hardcoded Password Found"), "❌ Missing: Hardcoded Password"),
                 () -> assertTrue(pageText.contains("Insecure File Handling"), "❌ Missing: Insecure File Handling")
