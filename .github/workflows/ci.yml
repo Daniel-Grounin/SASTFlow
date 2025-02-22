@@ -1,0 +1,47 @@
+name: Java CI with Maven & SAST
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛠️ Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Set Up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: 📦 Build with Maven
+        run: mvn clean compile
+
+      - name: 🧪 Run Unit Tests
+        run: mvn test
+
+      - name: 🏗️ Install Chrome for Selenium
+        run: sudo apt-get install -y chromium-browser
+
+      - name: 🚀 Run Selenium Test
+        run: mvn test -Dtest=SeleniumReportTest
+
+
+      - name: 🔍 Run SAST Scanner
+        run: |
+          mkdir -p reports
+          java -cp target/classes com.sast.Main
+
+      - name: 📂 Upload Scan Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan_results
+          path: reports/scan_results.html
